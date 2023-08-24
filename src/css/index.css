@@ -30,6 +30,8 @@ header {
     top: 0px;
     padding: 16px 0;
     background: white;
+    display: flex;
+    justify-content: space-between;
 }
 
 header h1 {
