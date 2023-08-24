@@ -1,0 +1,41 @@
+{
+  "name": "abacus",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "webpack-dev-server",
+    "dev": "webpack -w",
+    "lint": "eslint src --config=.eslintrc --ext=js",
+    "build": "webpack",
+    "release": "webpack --config webpack.production.config.js",
+    "test": "mocha ./tests/**/*-tests.js --require @babel/register",
+    "cover": "nyc --reporter=html npm run test",
+    "cover:ci": "nyc --reporter=text-summary --reporter=lcovonly npm run test"
+  },
+  "engines": {
+    "node": ">=12"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.19.3",
+    "@babel/core": "^7.20.2",
+    "@babel/eslint-parser": "^7.19.1",
+    "@babel/node": "^7.20.2",
+    "@babel/preset-env": "^7.20.2",
+    "@babel/register": "^7.18.9",
+    "babel-loader": "^9.1.0",
+    "copy-webpack-plugin": "^11.0.0",
+    "css-loader": "^6.7.2",
+    "eslint": "^8.28.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-webpack-plugin": "^3.2.0",
+    "fandom": "0.6.0",
+    "file-loader": "^6.2.0",
+    "mini-css-extract-plugin": "^2.7.0",
+    "mocha": "^10.1.0",
+    "nyc": "^15.1.0",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.0",
+    "webpack-dev-server": "^4.11.1",
+    "webpack-merge": "^5.8.0"
+  }
+}
