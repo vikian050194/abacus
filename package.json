@@ -1,8 +1,9 @@
 {
   "name": "abacus",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
+    "static": "node static.js",
     "start": "webpack-dev-server",
     "dev": "webpack -w",
     "lint": "eslint src --config=.eslintrc --ext=js",

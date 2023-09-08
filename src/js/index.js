@@ -14,22 +14,28 @@ document.addEventListener("DOMContentLoaded", function () {
     $root.classList.add("container");
 
     const TASK = "task";
+    const TOTAL = "total";
+    const INDEX = "count";
     const SCORE = "score";
+
+    let total = 10;
+    let index = 0;
+    let score = 0;
 
     const min = 1;
     const max = 99;
 
     let expected = 0;
     let actual = 0;
-    let score = 0;
-    let total = 0;
 
     const updateTask = (description) => {
         document.getElementById(TASK).innerText = description;
     };
 
-    const updateScore = (score, total) => {
-        document.getElementById(SCORE).innerText = `${score}/${total}`;
+    const updateScore = (total, index, score) => {
+        document.getElementById(TOTAL).innerText = `total: ${total}`;
+        document.getElementById(INDEX).innerText = `index: ${index}`;
+        document.getElementById(SCORE).innerText = `score: ${score}`;
     };
 
     const clearInput = () => {
@@ -48,23 +54,45 @@ document.addEventListener("DOMContentLoaded", function () {
     const onChange = (e) => {
         actual = parseInt(e.target.value);
         score += expected === actual ? 1 : 0;
-        total++;
-        updateScore(score, total);
+        index++;
+        updateScore(total, index, score);
+        if (index === total) {
+            onInit();
+            return;
+        }
         generate();
         clearInput();
     };
 
+    const onStart = () => {
+        const $main = document.getElementsByTagName("main")[0];
+        builder
+            .div({ id: TASK }).close()
+            .input({ type: "number", pattern: "[0-9]*", inputmode: "numeric" });
+        // TODO use input handler, not main
+        //.onChange(onChange);
+        replace($main, convert(builder.done()));
+        $main.onchange = onChange;
+        generate();
+        clearInput();
+    };
+
+    const onInit = () => {
+        index = 0;
+        score = 0;
+        builder
+            .button().text("(re)start").onClick(onStart).close();
+        replace(document.getElementsByTagName("main")[0], convert(builder.done()));
+    };
+
     builder
-        .open("header").span().text("abacus").close().span({id: SCORE}).close().close()
-        .open("main")
-        .div({ id: TASK }).close()
-        .input({ type: "number", pattern: "[0-9]*", inputmode: "numeric" }).onChange(onChange)
-        .close()
+        .open("header").span({ id: TOTAL }).close().span({ id: INDEX }).close().span({ id: SCORE }).close().close()
+        .open("main").close()
         .open("footer").text("footer").close();
 
     replace($root, convert(builder.done()));
 
-    generate();
-    updateScore(score, total);
-    clearInput();
+    updateScore(total, index, score);
+
+    onInit();
 });
