@@ -68,11 +68,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const $main = document.getElementsByTagName("main")[0];
         builder
             .div({ id: TASK }).close()
-            .input({ type: "number", pattern: "[0-9]*", inputmode: "numeric" });
-        // TODO use input handler, not main
-        //.onChange(onChange);
+            .input({ type: "number", pattern: "[0-9]*", inputmode: "numeric" }, { change: onChange});
         replace($main, convert(builder.done()));
-        $main.onchange = onChange;
         generate();
         clearInput();
     };
@@ -86,7 +83,7 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
     builder
-        .open("header").span({ id: TOTAL }).close().span({ id: INDEX }).close().span({ id: SCORE }).close().close()
+        .open("header").span({ id: TOTAL }).close().span({ id: INDEX }).close().span({ id: SCORE }).close(2)
         .open("main").close()
         .open("footer").text("footer").close();
 

@@ -16,7 +16,7 @@ I would like to have and use such a project. Also tt's re-implementation of my o
 ```
 npm run bulid
 npm start
-google-chrome http://localhost:8080
+google-chrome http://localhost:8000
 ```
 
 or

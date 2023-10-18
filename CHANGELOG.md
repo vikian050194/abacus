@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.2] - 2023-10-16
+
+### Changed
+
+- dependencies versions
+- direct input change event handling
+
 ## [0.2.1] - 2023-10-03
 
 ### Changed
@@ -32,7 +39,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - autofocus on input after page is loaded
 - score with right answers and total count of problems
 
-[Unreleased]: https://github.com/vikian050194/abacus/compare/v0.2.1...HEAD
+[Unreleased]: https://github.com/vikian050194/abacus/compare/v0.2.2...HEAD
+[0.2.2]: https://github.com/vikian050194/abacus/compare/v0.2.0...v0.2.2
 [0.2.1]: https://github.com/vikian050194/abacus/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/vikian050194/abacus/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/vikian050194/abacus/releases/tag/v0.1.0
