@@ -1,10 +1,19 @@
-import { Builder, convert, replace } from "fandom";
+import { Builder, Binder, convert, replace } from "fandom";
 
 const randomInt = (min, max) => {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
 };
+
+class Mark {
+    constructor(a, b, actual, expected) {
+        this.a = a;
+        this.b = b;
+        this.actual = actual;
+        this.expected = expected;
+    }
+}
 
 document.addEventListener("DOMContentLoaded", function () {
     const builder = new Builder();
@@ -18,6 +27,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const INDEX = "count";
     const SCORE = "score";
 
+    let a = 0;
+    let b = 0;
+
     let total = 10;
     let index = 0;
     let score = 0;
@@ -27,15 +39,32 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let expected = 0;
     let actual = 0;
+    let history = [];
 
     const updateTask = (description) => {
         document.getElementById(TASK).innerText = description;
     };
 
-    const updateScore = (total, index, score) => {
-        document.getElementById(TOTAL).innerText = `total: ${total}`;
-        document.getElementById(INDEX).innerText = `index: ${index}`;
-        document.getElementById(SCORE).innerText = `score: ${score}`;
+    const updateTotal = ($total) => {
+        $total.innerText = `total: ${total}`;
+    };
+
+    const updateIndex = ($index) => {
+        $index.innerText = `index: ${index}`;
+    };
+
+    const updateScore = ($score) => {
+        $score.innerText = `score: ${score}`;
+    };
+
+    const totalBinder = new Binder(updateTotal);
+    const indexBinder = new Binder(updateIndex);
+    const scoreBinder = new Binder(updateScore);
+
+    const updateHeader = () => {
+        totalBinder.call();
+        indexBinder.call();
+        scoreBinder.call();
     };
 
     const clearInput = () => {
@@ -45,51 +74,78 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
     const generate = () => {
-        const a = randomInt(min, max);
-        const b = randomInt(min, max);
+        a = randomInt(min, max);
+        b = randomInt(min, max);
         expected = a + b;
         updateTask(`${a}+${b}`);
     };
 
+    const onInit = ($main) => {
+        index = 0;
+        score = 0;
+        if (history.length > 0) {
+            builder.open("ol");
+            for (const mark of history) {
+                builder.open("li");
+                builder.span().text(mark.a).close();
+                builder.span().text(" + ").close();
+                builder.span().text(mark.b).close();
+                builder.span().text(" = ").close();
+                if (mark.actual === mark.expected) {
+                    builder.span({ class: "correct" }).text(mark.actual).close();
+                } else {
+                    builder.span({ class: "wrong" }).text(mark.actual).close();
+                    builder.span().text(" (").close();
+                    builder.span({ class: "correct" }).text(mark.expected).close();
+                    builder.span().text(")").close();
+                }
+                builder.close();
+            }
+            builder.close();
+        }
+        replace($main, convert(builder.done()));
+        history = [];
+    };
+
+    const initBinder = new Binder(onInit);
+
+    const onStart = ($main) => {
+        builder
+            .div({ id: TASK }).close()
+            .input({ type: "number", pattern: "[0-9]*", inputmode: "numeric" }, { change: onChange });
+        replace($main, convert(builder.done()));
+        generate();
+        clearInput();
+    };
+
+    const startBinder = new Binder(onStart);
+
     const onChange = (e) => {
         actual = parseInt(e.target.value);
-        score += expected === actual ? 1 : 0;
+        const isCorrect = expected === actual;
+        history.push(new Mark(a, b, actual, expected));
+        score += isCorrect ? 1 : 0;
         index++;
-        updateScore(total, index, score);
+        updateHeader();
         if (index === total) {
-            onInit();
+            initBinder.call();
             return;
         }
         generate();
         clearInput();
     };
 
-    const onStart = () => {
-        const $main = document.getElementsByTagName("main")[0];
-        builder
-            .div({ id: TASK }).close()
-            .input({ type: "number", pattern: "[0-9]*", inputmode: "numeric" }, { change: onChange});
-        replace($main, convert(builder.done()));
-        generate();
-        clearInput();
-    };
-
-    const onInit = () => {
-        index = 0;
-        score = 0;
-        builder
-            .button().text("(re)start").onClick(onStart).close();
-        replace(document.getElementsByTagName("main")[0], convert(builder.done()));
-    };
-
     builder
-        .open("header").span({ id: TOTAL }).close().span({ id: INDEX }).close().span({ id: SCORE }).close(2)
-        .open("main").close()
-        .open("footer").text("footer").close();
+        .open("header")
+        .span({ id: TOTAL }).bind(totalBinder).close()
+        .span({ id: INDEX }).bind(indexBinder).close()
+        .span({ id: SCORE }).bind(scoreBinder).close(2)
+        .open("main").bind(initBinder).bind(startBinder).close()
+        .open("footer").button({ class: "start" }).text("(re)start").onClick(startBinder.call).close(2);
 
     replace($root, convert(builder.done()));
 
-    updateScore(total, index, score);
+    updateHeader();
 
-    onInit();
+    initBinder.call();
 });

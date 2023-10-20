@@ -48,3 +48,15 @@ footer {
     padding: 8px 0;
     background: white;
 }
+
+.correct {
+    color: green;
+}
+
+.wrong {
+    color: red;
+}
+
+.start {
+    width: 100%;
+}
