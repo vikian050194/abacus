@@ -1,10 +1,6 @@
 import { Builder, Binder, convert, replace } from "fandom";
-
-const randomInt = (min, max) => {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-};
+import * as hsh from "./hash";
+import * as rnd from "./random";
 
 class Mark {
     constructor(a, b, actual, expected) {
@@ -15,7 +11,21 @@ class Mark {
     }
 }
 
+const getRandomFunction = (seed) => {
+    const hash = hsh.cyrb128(seed);
+    const random = rnd.sfc32(hash[0], hash[1], hash[2], hash[3]);
+    // const random = rnd.jsf32(hash[0], hash[1], hash[2], hash[3]);
+    // const random = rnd.xoshiro128ss(hash[0], hash[1], hash[2], hash[3]);
+    // const random = mulberry32(seed[0]);
+    return random;
+};
+
 document.addEventListener("DOMContentLoaded", function () {
+    const params = new URLSearchParams(window.location.search);
+    const seed = params.get("seed");
+    const random = seed === null ? Math.random : getRandomFunction(seed);
+    const randomInt = rnd.buildRandomInt(random);
+
     const builder = new Builder();
 
     const $root = document.getElementById("root");
