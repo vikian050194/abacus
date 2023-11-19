@@ -16,7 +16,7 @@ const getRandomFunction = (seed) => {
     const random = rnd.sfc32(hash[0], hash[1], hash[2], hash[3]);
     // const random = rnd.jsf32(hash[0], hash[1], hash[2], hash[3]);
     // const random = rnd.xoshiro128ss(hash[0], hash[1], hash[2], hash[3]);
-    // const random = mulberry32(seed[0]);
+    // const random = mulberry32(hash[0]);
     return random;
 };
 
@@ -151,7 +151,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .span({ id: INDEX }).bind(indexBinder).close()
         .span({ id: SCORE }).bind(scoreBinder).close(2)
         .open("main").bind(initBinder).bind(startBinder).close()
-        .open("footer").button({ class: "start" }).text("(re)start").onClick(startBinder.call).close(2);
+        .open("footer").button({ class: "start", id: "restart" }).text("(re)start").onClick(startBinder.call).close(2);
 
     replace($root, convert(builder.done()));
 
