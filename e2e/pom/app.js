@@ -7,22 +7,23 @@ class ResultRow extends BasePOM {
     constructor(page) {
         super(page);
 
-        this.index = new TextOption(page.locator("td").nth(0));
-        this.count = new TextOption(page.locator("td").nth(1));
-        this.name = new TextOption(page.locator("td").nth(2));
-        this.delete = new ButtonAction(page.locator("td").nth(3));
+        this.a = new TextOption(page.locator("span").nth(0));
+        this.op = new TextOption(page.locator("span").nth(1));
+        this.b = new TextOption(page.locator("span").nth(2));
+        this.actual = new TextOption(page.locator(".actual"));
+        this.expected = new TextOption(page.locator(".expected"));
     }
 
     async isValidIndex(expected) {
         await this.count.hasValue(`${expected}`);
     }
 
-    async isValidCount(expected) {
-        await this.count.hasValue(`${expected}`);
-    }
-
-    async isValidName(expected) {
-        await this.name.hasValue(expected);
+    async hasExpected(value = true) {
+        if (value) {
+            await this.expected.visible();
+        } else {
+            await this.expected.hidden();
+        }
     }
 }
 
@@ -39,7 +40,7 @@ export class AppPage extends BasePage {
         this.score = page.locator("#score");
 
         this.task = page.locator("#task");
-        this.input = page.locator("input");
+        this.answer = page.locator("#answer");
 
         this.restartButton = new ButtonAction(page.locator("#restart"));
     }
@@ -64,13 +65,22 @@ export class AppPage extends BasePage {
         await this.expect(this.score).toContainText(`score: ${value}`);
     }
 
+    async hasTask(a, op, b) {
+        await this.expect(this.task).toContainText(`${a}${op}${b}`);
+    }
+
+    async setAnswer(value) {
+        await this.answer.fill(value.toString());
+        await this.answer.press("Enter");
+    }
+
     async empty() {
         const row = this.page.locator("ol li");
         await this.expect(row).toHaveCount(0);
     }
 
-    getRowPom(index) {
-        const row = this.page.locator("li").nth(index);
+    async getResultRowPom(index) {
+        const row = await this.page.locator("li").nth(index);
         const rowPom = new ResultRow(row);
         return rowPom;
     }

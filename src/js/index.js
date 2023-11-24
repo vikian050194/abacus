@@ -102,11 +102,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 builder.span().text(mark.b).close();
                 builder.span().text(" = ").close();
                 if (mark.actual === mark.expected) {
-                    builder.span({ class: "correct" }).text(mark.actual).close();
+                    builder.span({ classList: ["actual", "correct"] }).text(mark.actual).close();
                 } else {
-                    builder.span({ class: "wrong" }).text(mark.actual).close();
+                    builder.span({ classList: ["actual", "wrong"] }).text(mark.actual).close();
                     builder.span().text(" (").close();
-                    builder.span({ class: "correct" }).text(mark.expected).close();
+                    builder.span({ classList: ["expected", "correct"] }).text(mark.expected).close();
                     builder.span().text(")").close();
                 }
                 builder.close();
@@ -122,7 +122,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const onStart = ($main) => {
         builder
             .div({ id: TASK }).close()
-            .input({ type: "number", pattern: "[0-9]*", inputmode: "numeric" }, { change: onChange });
+            .input({ type: "number", pattern: "[0-9]*", inputmode: "numeric", id: "answer" }, { change: onChange });
         replace($main, convert(builder.done()));
         generate();
         clearInput();

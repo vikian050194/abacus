@@ -11,7 +11,17 @@ export class BasePOM {
     }
 }
 
-export class TextOption extends BasePOM {
+class BaseOption extends BasePOM {
+    async visible() {
+        await this.expect(this.locator).toBeVisible();
+    }
+
+    async hidden() {
+        await this.expect(this.locator).toBeHidden();
+    }
+}
+
+export class TextOption extends BaseOption {
     /**
      * @param {import('@playwright/test').Page} page
      */
@@ -33,7 +43,7 @@ export class ButtonAction extends BasePOM {
     constructor(page) {
         super(page);
 
-        this.locator = page.locator("input");
+        this.locator = page;
     }
 
     async click() {

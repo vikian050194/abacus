@@ -10,6 +10,7 @@
     "build": "webpack",
     "release": "webpack --config webpack.production.config.js",
     "test": "mocha './tests/**/*-tests.js' --require @babel/register",
+    "test:ui": "playwright test",
     "cover": "nyc --reporter=html npm run test",
     "cover:ci": "nyc --reporter=text-summary --reporter=lcovonly npm run test"
   },
