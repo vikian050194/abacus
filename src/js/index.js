@@ -1,10 +1,6 @@
 import { Builder, Binder, convert, replace } from "fandom";
-
-const randomInt = (min, max) => {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-};
+import * as hsh from "./hash";
+import * as rnd from "./random";
 
 class Mark {
     constructor(a, b, actual, expected) {
@@ -15,7 +11,21 @@ class Mark {
     }
 }
 
+const getRandomFunction = (seed) => {
+    const hash = hsh.cyrb128(seed);
+    const random = rnd.sfc32(hash[0], hash[1], hash[2], hash[3]);
+    // const random = rnd.jsf32(hash[0], hash[1], hash[2], hash[3]);
+    // const random = rnd.xoshiro128ss(hash[0], hash[1], hash[2], hash[3]);
+    // const random = mulberry32(hash[0]);
+    return random;
+};
+
 document.addEventListener("DOMContentLoaded", function () {
+    const params = new URLSearchParams(window.location.search);
+    const seed = params.get("seed");
+    const random = seed === null ? Math.random : getRandomFunction(seed);
+    const randomInt = rnd.buildRandomInt(random);
+
     const builder = new Builder();
 
     const $root = document.getElementById("root");
@@ -92,11 +102,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 builder.span().text(mark.b).close();
                 builder.span().text(" = ").close();
                 if (mark.actual === mark.expected) {
-                    builder.span({ class: "correct" }).text(mark.actual).close();
+                    builder.span({ classList: ["actual", "correct"] }).text(mark.actual).close();
                 } else {
-                    builder.span({ class: "wrong" }).text(mark.actual).close();
+                    builder.span({ classList: ["actual", "wrong"] }).text(mark.actual).close();
                     builder.span().text(" (").close();
-                    builder.span({ class: "correct" }).text(mark.expected).close();
+                    builder.span({ classList: ["expected", "correct"] }).text(mark.expected).close();
                     builder.span().text(")").close();
                 }
                 builder.close();
@@ -112,7 +122,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const onStart = ($main) => {
         builder
             .div({ id: TASK }).close()
-            .input({ type: "number", pattern: "[0-9]*", inputmode: "numeric" }, { change: onChange });
+            .input({ type: "number", pattern: "[0-9]*", inputmode: "numeric", id: "answer" }, { change: onChange });
         replace($main, convert(builder.done()));
         generate();
         clearInput();
@@ -141,7 +151,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .span({ id: INDEX }).bind(indexBinder).close()
         .span({ id: SCORE }).bind(scoreBinder).close(2)
         .open("main").bind(initBinder).bind(startBinder).close()
-        .open("footer").button({ class: "start" }).text("(re)start").onClick(startBinder.call).close(2);
+        .open("footer").button({ class: "start", id: "restart" }).text("(re)start").onClick(startBinder.call).close(2);
 
     replace($root, convert(builder.done()));
 
