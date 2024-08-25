@@ -9,7 +9,7 @@
 
 ## Motivation
 
-I would like to have and use such a project. Also tt's re-implementation of my old project.
+I would like to have and use such a project. Also it's re-implementation of my old project.
 
 ## Usage
 
