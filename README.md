@@ -5,11 +5,13 @@
 
 ## About
 
-**abacus** is a web application for brain training via arithmetic problems solving. It is implemented without any framework or library except my own lightweight vanilla package that probably could be just one among other source files of current sources.
+**abacus** is a web application for brain training via common simple arithmetic problems solving. It is implemented without any framework or library except my own lightweight vanilla package that probably could be just one among other source files of current sources.
+
+By the way, there is [todo list](./TODO.md).
 
 ## Motivation
 
-I would like to have and use such a project. Also it's re-implementation of my old project.
+Just for fun. It's re-implementation of my old project.
 
 ## Usage
 
